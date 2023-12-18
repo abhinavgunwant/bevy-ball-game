@@ -1,8 +1,11 @@
 use crate::{
-    enemy::{ ENEMY_SIZE, components::Enemy },
-    player::components::Player,
-    star::{ *, components::Star },
-    score::resources::Score, events::GameOver,
+    game::{
+        enemy::{ ENEMY_SIZE, components::Enemy },
+        player::components::Player,
+        star::{ *, components::Star },
+        score::resources::Score,
+    },
+    events::GameOver,
 };
 
 use bevy::{ prelude::*, window::PrimaryWindow, audio::PlaybackMode };
@@ -11,6 +14,15 @@ pub const PLAYER_SPEED: f32 = 500.0;
 pub const PLAYER_SIZE: f32 = 64.0;
 pub const AUD_PLAYER_DEAD: &str = "audio/explosionCrunch_000.ogg";
 pub const SPR_PLAYER: &str = "sprites/ball_blue_large.png";
+
+pub fn despawn_player(
+    mut commands: Commands,
+    player_query: Query<Entity, With<Player>>,
+) {
+    if let Ok(player_entity) = player_query.get_single() {
+        commands.entity(player_entity).despawn();
+    }
+}
 
 pub fn player_movement (
     keyboard_input: Res<Input<KeyCode>>,

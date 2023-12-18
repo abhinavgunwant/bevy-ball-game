@@ -1,14 +1,17 @@
 use crate::{
-    enemy::{ *, components::Enemy },
-    player::{ systems::{ SPR_PLAYER, PLAYER_SIZE }, components::Player },
-    star::{ *, components::Star },
-    events::GameOver
+    game::{
+        SimulationState,
+        enemy::{ *, components::Enemy },
+        player::{ systems::{ SPR_PLAYER, PLAYER_SIZE }, components::Player },
+        star::{ *, components::Star },
+    },
+    AppState, events::GameOver
 };
 
 use bevy::{ prelude::*, window::PrimaryWindow, app::AppExit };
 use rand::prelude::*;
 
-pub fn setup(
+pub fn startup(
     mut commands: Commands,
     window_query: Query<&Window, With<PrimaryWindow>>,
     asset_server: Res<AssetServer>,
@@ -26,6 +29,21 @@ pub fn setup(
     commands.spawn(Camera2dBundle {
         transform: Transform::from_xyz(posx, posy, 999.0), ..default()
     });
+}
+
+pub fn setup(
+    mut commands: Commands,
+    window_query: Query<&Window, With<PrimaryWindow>>,
+    asset_server: Res<AssetServer>,
+) {
+    let window = window_query.get_single().unwrap();
+
+    let window_width = window.width();
+    let window_height = window.height();
+
+    println!("Window width: {}, height: {}", window_width, window_height);
+    let posx = window_width / 2.0;
+    let posy = window_height / 2.0;
 
     // spawn player
     commands.spawn((
@@ -72,6 +90,41 @@ pub fn setup(
     }
 }
 
+pub fn transition_to_game_state(
+    mut commands: Commands,
+    keyboard_input: Res<Input<KeyCode>>,
+    app_state: Res<State<AppState>>,
+) {
+    if keyboard_input.just_pressed(KeyCode::G) {
+        match app_state.get() {
+            AppState::Game => {}
+
+            _ => {
+                commands.insert_resource(NextState(Some(AppState::Game)));
+                println!("Entered AppState::Game");
+            }
+        }
+    }
+}
+
+pub fn transition_to_main_menu_state(
+    mut commands: Commands,
+    keyboard_input: Res<Input<KeyCode>>,
+    app_state: Res<State<AppState>>,
+) {
+    if keyboard_input.just_pressed(KeyCode::M) {
+        match app_state.get() {
+            AppState::MainMenu => {}
+
+            _ => {
+                commands.insert_resource(NextState(Some(AppState::MainMenu)));
+                commands.insert_resource(NextState(Some(SimulationState::Paused)));
+                println!("Entered AppState::MainMenu");
+            }
+        }
+    }
+}
+
 pub fn exit_game(
     keyboard_input: Res<Input<KeyCode>>,
     mut app_exit_event_writer: EventWriter<AppExit>,
@@ -81,9 +134,13 @@ pub fn exit_game(
     }
 }
 
-pub fn handle_game_over(mut game_over_event_reader: EventReader<GameOver>) {
+pub fn handle_game_over(
+    mut commands: Commands,
+    mut game_over_event_reader: EventReader<GameOver>
+) {
     for event in game_over_event_reader.read() {
         println!("Game Over! Your final score is: {}", event.score.to_string());
+        commands.insert_resource(NextState(Some(AppState::GameOver)));
     }
 }
 

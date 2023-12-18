@@ -4,6 +4,7 @@ pub mod components;
 pub mod resources;
 pub mod systems;
 
+use crate::{ AppState, game::SimulationState };
 use systems::*;
 use resources::EnemySpawnTimer;
 
@@ -21,9 +22,14 @@ impl Plugin for EnemyPlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<EnemySpawnTimer>()
             .add_systems(Update, (
-                enemy_movement, tick_enemy_spawn_timer,
+                enemy_movement,
+                tick_enemy_spawn_timer,
                 spawn_enemies_over_time,
-            ));
+            )
+                .run_if(in_state(AppState::Game))
+                .run_if(in_state(SimulationState::Running))
+        )
+        .add_systems(OnExit(AppState::Game), despawn_enemies);
     }
 }
 

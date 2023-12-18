@@ -1,7 +1,16 @@
 use bevy::{ prelude::*, window::PrimaryWindow, audio::PlaybackMode };
 use rand::prelude::*;
 
-use crate::enemy::{ *, components::Enemy, resources::EnemySpawnTimer };
+use crate::game::enemy::{ *, components::Enemy, resources::EnemySpawnTimer };
+
+pub fn despawn_enemies(
+    mut commands: Commands,
+    enemy_query: Query<Entity, With<Enemy>>,
+) {
+    for enemy_entity in enemy_query.iter() {
+        commands.entity(enemy_entity).despawn();
+    }
+}
 
 pub fn enemy_movement(
     mut commands: Commands,

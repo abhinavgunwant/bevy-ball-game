@@ -1,17 +1,11 @@
 pub mod events;
 mod systems;
 
-mod enemy;
-mod player;
-mod score;
-mod star;
+mod game;
+mod main_menu;
 
-use enemy::{ EnemyPlugin, resources::* };
-use player::PlayerPlugin;
-use score::{ ScorePlugin, resources::* };
-use star::{ StarPlugin, resources::* };
-
-use events::*;
+use game::GamePlugin;
+use main_menu::MainMenuPlugin;
 use systems::*;
 
 use bevy::prelude::*;
@@ -19,17 +13,23 @@ use bevy::prelude::*;
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
-        .add_plugins(EnemyPlugin)
-        .add_plugins(PlayerPlugin)
-        .add_plugins(ScorePlugin)
-        .add_plugins(StarPlugin)
-        .init_resource::<Score>()
-        .init_resource::<HighScores>()
-        .init_resource::<StarSpawnTimer>()
-        .init_resource::<EnemySpawnTimer>()
-        .add_event::<GameOver>()
-        .add_systems(Startup, setup)
-        .add_systems(Update, ( exit_game, handle_game_over ))
+        .add_state::<AppState>()
+        .add_plugins(GamePlugin)
+        .add_plugins(MainMenuPlugin)
+        .add_systems(Startup, startup)
+        .add_systems(OnEnter(AppState::Game), setup)
+        .add_systems(Update, (
+            exit_game, handle_game_over, transition_to_game_state,
+            transition_to_main_menu_state,
+        ))
         .run();
+}
+
+#[derive(States, Debug, Clone, Copy, Eq, PartialEq, Hash, Default)]
+enum AppState {
+    #[default]
+    MainMenu,
+    Game,
+    GameOver,
 }
 

@@ -9,6 +9,7 @@ pub const STAR_SIZE: f32 = 30.0;
 pub const AUD_STAR_COLLECT: &str = "audio/laserLarge_000.ogg";
 pub const SPR_STAR: &str = "sprites/star.png";
 
+use crate::{ AppState, game::SimulationState };
 use resources::*;
 use systems::*;
 
@@ -19,6 +20,10 @@ impl Plugin for StarPlugin {
         app.init_resource::<StarSpawnTimer>()
             .add_systems(Update, (
                 tick_star_spawn_timer, spawn_stars_over_time,
-            ));
+                )
+                .run_if(in_state(AppState::Game))
+                .run_if(in_state(SimulationState::Running))
+            )
+            .add_systems(OnExit(AppState::Game), despawn_stars);
     }
 }

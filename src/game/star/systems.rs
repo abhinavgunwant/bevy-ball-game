@@ -1,6 +1,17 @@
-use crate::star::{ SPR_STAR, resources::StarSpawnTimer, components::Star };
+use crate::game::star::{
+    SPR_STAR, resources::StarSpawnTimer, components::Star
+};
 use bevy::{ prelude::*, window::PrimaryWindow };
 use rand::prelude::*;
+
+pub fn despawn_stars(
+    mut commands: Commands,
+    star_query: Query<Entity, With<Star>>,
+) {
+    for star_entity in star_query.iter() {
+        commands.entity(star_entity).despawn();
+    }
+}
 
 pub fn spawn_stars_over_time(
     mut commands: Commands,

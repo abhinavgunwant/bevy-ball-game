@@ -4,7 +4,7 @@ mod systems;
 mod game;
 mod main_menu;
 
-use game::GamePlugin;
+use game::{ GamePlugin, ui::GameUIPlugin };
 use main_menu::MainMenuPlugin;
 use systems::*;
 
@@ -15,6 +15,7 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_state::<AppState>()
         .add_plugins(GamePlugin)
+        .add_plugins(GameUIPlugin)
         .add_plugins(MainMenuPlugin)
         .add_systems(Startup, startup)
         .add_systems(OnEnter(AppState::Game), setup)

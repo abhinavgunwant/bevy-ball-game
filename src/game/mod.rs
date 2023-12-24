@@ -3,6 +3,7 @@ pub mod player;
 mod score;
 pub mod star;
 mod systems;
+pub mod ui;
 
 use bevy::prelude::*;
 use enemy::EnemyPlugin;
@@ -22,6 +23,7 @@ impl Plugin for GamePlugin {
             .add_plugins(PlayerPlugin)
             .add_plugins(ScorePlugin)
             .add_plugins(StarPlugin)
+            .add_systems(OnEnter(AppState::Game), pause_simulation)
             .add_systems(Update, toggle_simulation.run_if(
                 in_state(AppState::Game)
             ));
@@ -30,8 +32,8 @@ impl Plugin for GamePlugin {
 
 #[derive(States, Debug, Clone, Copy, Eq, PartialEq, Hash, Default)]
 pub enum SimulationState {
-    Running,
     #[default]
+    Running,
     Paused,
 }
 

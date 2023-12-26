@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 use crate::{
-    game::{ui::{ styles::*, game_over_menu::components::* }, score::resources::{Score, HighScores}},
+    game::ui::{ styles::*, game_over_menu::components::* },
     main_menu::styles::*,
 };
 
@@ -9,9 +9,7 @@ pub fn spawn_game_over_menu(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
 ) {
-    let game_over_menu_entity = build_game_over_menu(
-        &mut commands, &asset_server
-    );
+    build_game_over_menu(&mut commands, &asset_server);
 }
 
 pub fn despawn_game_over_menu(
@@ -78,7 +76,7 @@ fn build_game_over_menu(
             parent.spawn(TextBundle {
                 text: Text {
                     sections: vec![TextSection::new(
-                        "Restart",
+                        "Restart [G]",
                         get_button_text_style(asset_server),
                     )],
                     alignment: TextAlignment::Center,
@@ -124,7 +122,7 @@ fn build_game_over_menu(
             parent.spawn(TextBundle {
                 text: Text {
                     sections: vec![TextSection::new(
-                        "Quit",
+                        "Quit [Esc]",
                         get_button_text_style(asset_server),
                     )],
                     alignment: TextAlignment::Center,

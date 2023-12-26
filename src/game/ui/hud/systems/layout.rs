@@ -5,11 +5,8 @@ use crate::{
     main_menu::styles::*,
 };
 
-pub fn spawn_hud(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-) {
-    let main_menu_entity = build_hud(&mut commands, &asset_server);
+pub fn spawn_hud(mut commands: Commands, asset_server: Res<AssetServer>) {
+    build_hud(&mut commands, &asset_server);
 }
 
 pub fn despawn_hud() {}

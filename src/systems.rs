@@ -14,7 +14,6 @@ use rand::prelude::*;
 pub fn startup(
     mut commands: Commands,
     window_query: Query<&Window, With<PrimaryWindow>>,
-    asset_server: Res<AssetServer>,
 ) {
     let window = window_query.get_single().unwrap();
 

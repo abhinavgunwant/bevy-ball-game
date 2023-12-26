@@ -9,7 +9,7 @@ pub fn spawn_pause_menu(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
 ) {
-    let main_menu_entity = build_pause_menu(&mut commands, &asset_server);
+    build_pause_menu(&mut commands, &asset_server);
 }
 
 pub fn despawn_pause_menu(
@@ -59,7 +59,7 @@ fn build_pause_menu(
             parent.spawn(TextBundle {
                 text: Text {
                     sections: vec![TextSection::new(
-                        "Resume",
+                        "Resume [Space]",
                         get_button_text_style(asset_server),
                     )],
                     alignment: TextAlignment::Center,
@@ -105,7 +105,7 @@ fn build_pause_menu(
             parent.spawn(TextBundle {
                 text: Text {
                     sections: vec![TextSection::new(
-                        "Quit",
+                        "Quit [Esc]",
                         get_button_text_style(asset_server),
                     )],
                     alignment: TextAlignment::Center,

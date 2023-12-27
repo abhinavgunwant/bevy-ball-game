@@ -116,3 +116,43 @@ fn build_hud(
     hud_entity
 }
 
+pub fn spawn_fps_counter(mut commands: Commands) {
+    let mut fps_root_style = GAME_MENU_STYLE.clone();
+    fps_root_style.position_type = PositionType::Absolute;
+    fps_root_style.left = Val::Px(0.0);
+    fps_root_style.top = Val::Px(0.0);
+
+    commands.spawn((
+        NodeBundle {
+            background_color: COLOR_TRANSPARENT.into(),
+            z_index: ZIndex::Global(i32::MAX),
+            style: fps_root_style.into(),
+            ..default()
+        },
+        FpsRoot {},
+    )).with_children(|parent| {
+        let style = TextStyle {
+            font_size: 16.0,
+            color: Color::WHITE,
+            ..default()
+        };
+
+        parent.spawn((
+            TextBundle {
+                text: Text::from_sections([
+                    TextSection {
+                        value: "FPS: ".into(),
+                        style: style.clone(),
+                    },
+                    TextSection {
+                        value: "N/A".into(),
+                        style,
+                    }
+                ]),
+                ..default()
+            },
+            FpsText {},
+        ));
+    });
+}
+

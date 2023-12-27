@@ -8,11 +8,23 @@ use game::{ GamePlugin, ui::GameUIPlugin };
 use main_menu::MainMenuPlugin;
 use systems::*;
 
-use bevy::prelude::*;
+use bevy::{
+    prelude::*, window::PresentMode, diagnostic::FrameTimeDiagnosticsPlugin,
+};
 
 fn main() {
+    let window_plugin = WindowPlugin {
+        primary_window: Some(Window {
+            title: "Bevy Ball Game - Explorations".into(),
+            present_mode: PresentMode::Immediate,
+            ..default()
+        }),
+        ..default()
+    };
+
     App::new()
-        .add_plugins(DefaultPlugins)
+        .add_plugins(DefaultPlugins.set(window_plugin))
+        .add_plugins(FrameTimeDiagnosticsPlugin::default())
         .add_state::<AppState>()
         .add_plugins(GamePlugin)
         .add_plugins(GameUIPlugin)
